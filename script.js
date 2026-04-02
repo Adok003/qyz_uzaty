@@ -276,3 +276,21 @@ function showMsg(el, text, type) {
 window.addEventListener('scroll', () => {
   // Placeholder nav стикки болса
 }, { passive: true });
+
+
+var isPlaying = false;
+
+function toggleMusic() {
+  var audio = document.getElementById('bgMusic');
+  var icon  = document.getElementById('musicIcon');
+  if (isPlaying) {
+    audio.pause();
+    icon.textContent = '▶';
+    isPlaying = false;
+  } else {
+    audio.volume = 0.35;
+    audio.play();
+    icon.textContent = '⏸';
+    isPlaying = true;
+  }
+}
