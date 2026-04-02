@@ -1,66 +1,112 @@
-/* ══════════════════════════════════════════════════════
-   ҚЫЗ ҰЗАТУ — JavaScript
-   ══════════════════════════════════════════════════════ */
-
 'use strict';
 
-/* ── КОНФИГУРАЦИЯ ──────────────────────────────────────
-   Осы жерді өзіңіздің мәліметтеріңізге ауыстырыңыз
-   ────────────────────────────────────────────────────── */
-const CONFIG = {
-  // Той күні мен уақыты
-  weddingDate: new Date('2025-06-20T14:00:00'),
-
-  // Google Apps Script URL (орнатқаннан кейін қойыңыз)
-  appsScriptUrl: 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE',
-
-  // Той мәліметтері
-  venueName: '«Астана» Мейрамханасы',
-  venueAddr: 'Алматы қаласы, Абай даңғылы, 150',
+/* ══════════════════════════════════════════════════════
+   КОНФИГУРАЦИЯ — осыны өзіңіздің мәліметтеріңізге өзгертіңіз
+   ══════════════════════════════════════════════════════ */
+var CONFIG = {
+  weddingDate:    new Date('2025-06-20T14:00:00'),
+  appsScriptUrl:  'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE',
 };
 
 /* ══════════════════════════════════════════════════════
-   1. КОНВЕРТ АНИМАЦИЯСЫ
+   МУЗЫКА
+   ══════════════════════════════════════════════════════ */
+var isPlaying = false;
+
+function playMusic() {
+  var audio = document.getElementById('bgMusic');
+  if (!audio) return;
+  audio.volume = 0.32;
+  var p = audio.play();
+  if (p !== undefined) {
+    p.then(function() {
+      isPlaying = true;
+      updateMusicBtn(true);
+    }).catch(function(e) {
+      console.log('Музыка қосылмады:', e);
+    });
+  }
+}
+
+function toggleMusic() {
+  var audio = document.getElementById('bgMusic');
+  if (!audio) return;
+  if (isPlaying) {
+    audio.pause();
+    isPlaying = false;
+    updateMusicBtn(false);
+  } else {
+    playMusic();
+  }
+}
+
+function updateMusicBtn(playing) {
+  var btn       = document.getElementById('musicBtn');
+  var iconPlay  = document.getElementById('iconPlay');
+  var iconBars  = document.getElementById('iconBars');
+  if (!btn) return;
+  if (playing) {
+    btn.classList.add('playing');
+    if (iconPlay) iconPlay.style.display = 'none';
+    if (iconBars) iconBars.style.display = 'flex';
+  } else {
+    btn.classList.remove('playing');
+    if (iconPlay) iconPlay.style.display = 'block';
+    if (iconBars) iconBars.style.display = 'none';
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   КОНВЕРТ АШУ
    ══════════════════════════════════════════════════════ */
 function openEnvelope() {
-  const envelope = document.getElementById('envelope');
-  const letterInside = document.getElementById('letterInside');
-  const screen = document.getElementById('envelopeScreen');
-  const main = document.getElementById('mainContent');
+  var envelope     = document.getElementById('envelope');
+  var letterInside = document.getElementById('letterInside');
+  var screen       = document.getElementById('envelopeScreen');
+  var main         = document.getElementById('mainContent');
 
-  if (envelope.classList.contains('opening')) return;
+  if (!envelope || envelope.classList.contains('opening')) return;
 
-  // Конверт ашылу
+  // Конверт ашылу анимациясы
   envelope.classList.add('opening');
-  envelope.style.animation = 'none'; // Float тоқтату
+  envelope.style.animation = 'none';
 
   // Хат жоғары шығу
-  setTimeout(() => {
-    letterInside.classList.add('rising');
-    letterInside.style.opacity = '1';
+  setTimeout(function() {
+    if (letterInside) {
+      letterInside.classList.add('rising');
+      letterInside.style.opacity = '1';
+    }
   }, 300);
 
-  // Негізгі мазмұнға өту
-  setTimeout(() => {
-    screen.style.transition = 'opacity 0.8s ease';
-    screen.style.opacity = '0';
+  // Экран жасырылу
+  setTimeout(function() {
+    if (screen) {
+      screen.style.transition = 'opacity 0.8s ease';
+      screen.style.opacity = '0';
+    }
   }, 1800);
 
-  setTimeout(() => {
-    screen.style.display = 'none';
-    main.classList.remove('hidden');
-    main.style.opacity = '0';
-    main.style.transition = 'opacity 0.6s ease';
-    setTimeout(() => { main.style.opacity = '1'; }, 50);
+  // Негізгі мазмұн ашылу
+  setTimeout(function() {
+    if (screen) screen.style.display = 'none';
+    if (main) {
+      main.classList.remove('hidden');
+      main.style.opacity = '0';
+      main.style.transition = 'opacity 0.6s ease';
+      setTimeout(function() { main.style.opacity = '1'; }, 50);
+    }
 
-    // Инициализация бастау
-    setTimeout(playMusic, 500);
+    // Конверт ашылған соң музыка қосылу
+    setTimeout(playMusic, 600);
+
+    // Негізгі функциялар іске қосылу
     initMain();
   }, 2600);
 }
 
 /* ══════════════════════════════════════════════════════
-   2. НЕГІЗГІ ИНИЦИАЛИЗАЦИЯ
+   НЕГІЗГІ ИНИЦИАЛИЗАЦИЯ
    ══════════════════════════════════════════════════════ */
 function initMain() {
   createPetals();
@@ -71,70 +117,59 @@ function initMain() {
 }
 
 /* ══════════════════════════════════════════════════════
-   3. ГҮЛ ЖАПЫРАҚТАРЫ
+   ГҮЛ ЖАПЫРАҚТАРЫ
    ══════════════════════════════════════════════════════ */
 function createPetals() {
-  const container = document.getElementById('petals');
+  var container = document.getElementById('petals');
   if (!container) return;
 
-  const colors = ['#E8C4B8','#F2D4CC','#DEB8B0','#F5DDD8','#D4AF37','#F0D070','#E8D4A0'];
-  const count = window.innerWidth < 600 ? 12 : 20;
+  var colors = ['#E8C4B8','#F2D4CC','#DEB8B0','#F5DDD8','#D4AF37','#F0D070','#E8D4A0'];
+  var count  = window.innerWidth < 600 ? 10 : 18;
 
-  for (let i = 0; i < count; i++) {
-    const petal = document.createElement('div');
+  for (var i = 0; i < count; i++) {
+    var petal = document.createElement('div');
     petal.className = 'petal';
-
-    const size = 8 + Math.random() * 14;
-    const left = Math.random() * 100;
-    const dur  = 6 + Math.random() * 9;
-    const delay = -Math.random() * 10; // Бірден ұшып жүрсін
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const borderR = `${40 + Math.random() * 20}% ${Math.random() * 15}% ${40 + Math.random() * 20}% ${Math.random() * 15}%`;
-
+    var size  = 8 + Math.random() * 13;
+    var left  = Math.random() * 100;
+    var dur   = 6 + Math.random() * 9;
+    var delay = -Math.random() * 10;
+    var color = colors[Math.floor(Math.random() * colors.length)];
+    var br    = (40 + Math.random()*18)+'% '+(Math.random()*14)+'% '+(40+Math.random()*18)+'% '+(Math.random()*14)+'%';
     petal.style.cssText = [
-      `width:${size}px`,
-      `height:${size * 0.65}px`,
-      `left:${left}%`,
-      `background:${color}`,
-      `border-radius:${borderR}`,
-      `animation-duration:${dur}s`,
-      `animation-delay:${delay}s`,
-      `opacity:0`,
+      'width:'+size+'px',
+      'height:'+(size*0.65)+'px',
+      'left:'+left+'%',
+      'background:'+color,
+      'border-radius:'+br,
+      'animation-duration:'+dur+'s',
+      'animation-delay:'+delay+'s',
+      'opacity:0'
     ].join(';');
-
     container.appendChild(petal);
   }
 }
 
 /* ══════════════════════════════════════════════════════
-   4. ПАРАЛЛАКС
+   ПАРАЛЛАКС
    ══════════════════════════════════════════════════════ */
 function initParallax() {
-  const layers = document.querySelectorAll('.parallax-layer');
+  if (window.innerWidth < 600) return;
+  var layers = document.querySelectorAll('.parallax-layer');
   if (!layers.length) return;
 
-  // Mobile-да жеңіл параллакс
-  const isMobile = window.innerWidth < 600;
-  if (isMobile) return;
-
-  let ticking = false;
-
-  window.addEventListener('scroll', () => {
+  var ticking = false;
+  window.addEventListener('scroll', function() {
     if (!ticking) {
-      requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-        const hero = document.getElementById('hero');
+      requestAnimationFrame(function() {
+        var scrollY = window.scrollY;
+        var hero    = document.getElementById('hero');
         if (!hero) { ticking = false; return; }
-
-        const heroHeight = hero.offsetHeight;
-        const progress = Math.min(scrollY / heroHeight, 1);
-
-        layers.forEach(layer => {
-          const speed = parseFloat(layer.dataset.speed) || 0.3;
-          const offset = scrollY * speed * 0.6;
-          layer.style.transform = `translateY(${offset}px)`;
+        var heroH   = hero.offsetHeight;
+        if (scrollY > heroH) { ticking = false; return; }
+        layers.forEach(function(layer) {
+          var speed = parseFloat(layer.dataset.speed) || 0.3;
+          layer.style.transform = 'translateY(' + (scrollY * speed * 0.55) + 'px)';
         });
-
         ticking = false;
       });
       ticking = true;
@@ -143,40 +178,38 @@ function initParallax() {
 }
 
 /* ══════════════════════════════════════════════════════
-   5. КЕРІ САНАҚ
+   КЕРІ САНАҚ
    ══════════════════════════════════════════════════════ */
 function startCountdown() {
-  const elDays  = document.getElementById('t-days');
-  const elHours = document.getElementById('t-hours');
-  const elMins  = document.getElementById('t-mins');
-  const elSecs  = document.getElementById('t-secs');
+  var elD = document.getElementById('t-days');
+  var elH = document.getElementById('t-hours');
+  var elM = document.getElementById('t-mins');
+  var elS = document.getElementById('t-secs');
+  if (!elD) return;
 
-  if (!elDays) return;
+  var prev = {};
 
-  let prevVals = {};
-
-  function updateNum(el, val) {
-    const str = String(Math.floor(val)).padStart(2, '0');
-    if (prevVals[el.id] !== str) {
-      el.textContent = str;
+  function upd(el, val) {
+    var s = String(Math.floor(val)).padStart(2,'0');
+    if (prev[el.id] !== s) {
+      el.textContent = s;
       el.style.animation = 'none';
-      void el.offsetWidth; // reflow
-      el.style.animation = 'cdPulse 0.3s ease';
-      prevVals[el.id] = str;
+      void el.offsetWidth;
+      el.style.animation = 'cdFlip 0.3s ease';
+      prev[el.id] = s;
     }
   }
 
   function tick() {
-    const diff = CONFIG.weddingDate - new Date();
-    if (diff <= 0) {
-      elDays.textContent = elHours.textContent = elMins.textContent = elSecs.textContent = '00';
+    var d = CONFIG.weddingDate - new Date();
+    if (d <= 0) {
+      [elD,elH,elM,elS].forEach(function(e){ e.textContent='00'; });
       return;
     }
-
-    updateNum(elDays,  diff / 86400000);
-    updateNum(elHours, (diff % 86400000) / 3600000);
-    updateNum(elMins,  (diff % 3600000) / 60000);
-    updateNum(elSecs,  (diff % 60000) / 1000);
+    upd(elD, d / 86400000);
+    upd(elH, (d % 86400000) / 3600000);
+    upd(elM, (d % 3600000)  / 60000);
+    upd(elS, (d % 60000)    / 1000);
   }
 
   tick();
@@ -184,14 +217,14 @@ function startCountdown() {
 }
 
 /* ══════════════════════════════════════════════════════
-   6. SCROLL REVEAL
+   SCROLL REVEAL
    ══════════════════════════════════════════════════════ */
 function initScrollReveal() {
-  const els = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
+  var els = document.querySelectorAll('.reveal-up,.reveal-left,.reveal-right');
   if (!els.length) return;
 
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
       if (e.isIntersecting) {
         e.target.classList.add('in');
         io.unobserve(e.target);
@@ -199,117 +232,68 @@ function initScrollReveal() {
     });
   }, { threshold: 0.1 });
 
-  els.forEach(el => io.observe(el));
+  els.forEach(function(el) { io.observe(el); });
 }
 
 /* ══════════════════════════════════════════════════════
-   7. RSVP ФОРМА
+   RSVP ФОРМА
    ══════════════════════════════════════════════════════ */
 function initRsvpForm() {
-  const form = document.getElementById('rsvpForm');
-  const btn  = document.getElementById('submitBtn');
-  const msg  = document.getElementById('formMsg');
-
+  var form = document.getElementById('rsvpForm');
+  var btn  = document.getElementById('submitBtn');
+  var msg  = document.getElementById('formMsg');
   if (!form) return;
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // Деректерді жинау
-    const data = {
+    var checked = form.querySelector('input[name="status"]:checked');
+    if (!form.guestName.value.trim()) {
+      showMsg(msg, 'Аты-жөніңізді енгізіңіз', 'error'); return;
+    }
+    if (!checked) {
+      showMsg(msg, 'Келу статусын таңдаңыз', 'error'); return;
+    }
+
+    var data = {
       timestamp:  new Date().toLocaleString('kk-KZ'),
       guestName:  form.guestName.value.trim(),
       guestPhone: form.guestPhone.value.trim(),
-      status:     form.querySelector('input[name="status"]:checked')?.value || '—',
+      status:     checked.value,
       guestCount: form.guestCount.value,
       guestWish:  form.guestWish.value.trim(),
     };
 
-    // Тексеру
-    if (!data.guestName) {
-      showMsg(msg, 'Аты-жөніңізді енгізіңіз', 'error');
-      return;
-    }
-    if (!form.querySelector('input[name="status"]:checked')) {
-      showMsg(msg, 'Келу статусын таңдаңыз', 'error');
-      return;
-    }
-
-    // Жіберу
     btn.disabled = true;
     btn.textContent = 'Жіберілуде...';
 
-    try {
-      if (CONFIG.appsScriptUrl && CONFIG.appsScriptUrl !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-        await fetch(CONFIG.appsScriptUrl, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-      } else {
-        // Demo режим
-        console.log('RSVP (demo):', data);
-        await new Promise(r => setTimeout(r, 800));
-      }
-
-      showMsg(msg, 'Рахмет! Жауабыңыз қабылданды ✦', 'success');
-      form.reset();
-    } catch (err) {
-      console.error(err);
-      showMsg(msg, 'Қате шықты. Қайталап көріңіз.', 'error');
-    } finally {
+    function finish(ok) {
       btn.disabled = false;
       btn.textContent = 'Растауды жіберу';
+      if (ok) {
+        showMsg(msg, 'Рахмет! Жауабыңыз қабылданды ✦', 'success');
+        form.reset();
+      } else {
+        showMsg(msg, 'Қате шықты. Қайталап көріңіз.', 'error');
+      }
+    }
+
+    if (CONFIG.appsScriptUrl && CONFIG.appsScriptUrl !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+      fetch(CONFIG.appsScriptUrl, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(function() { finish(true); })
+        .catch(function()  { finish(false); });
+    } else {
+      console.log('RSVP (demo):', data);
+      setTimeout(function() { finish(true); }, 700);
     }
   });
 }
 
 function showMsg(el, text, type) {
   el.textContent = text;
-  el.className = `form-msg ${type}`;
-  setTimeout(() => { el.textContent = ''; el.className = 'form-msg'; }, 5000);
-}
-
-/* ══════════════════════════════════════════════════════
-   8. SCROLL: NAV ЭФФЕКТ (болашақта қажет болса)
-   ══════════════════════════════════════════════════════ */
-window.addEventListener('scroll', () => {
-  // Placeholder nav стикки болса
-}, { passive: true });
-
-
-var isPlaying = false;
-
-function playMusic() {
-  var audio = document.getElementById('bgMusic');
-  var icon  = document.getElementById('musicIcon');
-  if (!audio) return;
-  
-  audio.volume = 0.35;
-  var promise = audio.play();
-  
-  if (promise !== undefined) {
-    promise.then(function() {
-      isPlaying = true;
-      if (icon) icon.textContent = '⏸';
-    }).catch(function(e) {
-      // Браузер блоктаса — тыныш өтеді
-      console.log('Музыка қосылмады:', e);
-    });
-  }
-}
-
-function toggleMusic() {
-  var audio = document.getElementById('bgMusic');
-  var icon  = document.getElementById('musicIcon');
-  if (!audio) return;
-
-  if (isPlaying) {
-    audio.pause();
-    isPlaying = false;
-    if (icon) icon.textContent = '▶';
-  } else {
-    playMusic();
-  }
+  el.className = 'form-msg ' + type;
+  setTimeout(function() { el.textContent = ''; el.className = 'form-msg'; }, 5000);
 }

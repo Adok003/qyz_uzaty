@@ -8,12 +8,29 @@
 </head>
 <body>
 
+  <!-- ══ МУЗЫКА ══ -->
+  <audio id="bgMusic" loop preload="none">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ══ МУЗЫКА БАТЫРМАСЫ ══ -->
+  <button id="musicBtn" onclick="toggleMusic()" title="Музыка">
+    <svg id="iconPlay" width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+      <polygon points="4,2 16,9 4,16"/>
+    </svg>
+    <div id="iconBars" class="bars" style="display:none">
+      <div class="bar b1"></div>
+      <div class="bar b2"></div>
+      <div class="bar b3"></div>
+      <div class="bar b4"></div>
+    </div>
+  </button>
+
   <!-- ══════════════════════════════════════════
        КОНВЕРТ ЭКРАНЫ
   ══════════════════════════════════════════ -->
   <div id="envelopeScreen">
     <div class="env-bg-ornament">
-      <!-- Фон оюлар -->
       <svg class="oyu-bg" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
         <defs>
           <pattern id="oyuPat" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
@@ -25,13 +42,6 @@
         </defs>
         <rect width="400" height="400" fill="url(#oyuPat)"/>
       </svg>
-
-      <!-- Бұрыш оюлар -->
-      <svg class="corner-oyu tl" viewBox="0 0 120 120"><use href="#cornOyu"/></svg>
-      <svg class="corner-oyu tr" viewBox="0 0 120 120" style="transform:scaleX(-1)"><use href="#cornOyu"/></svg>
-      <svg class="corner-oyu bl" viewBox="0 0 120 120" style="transform:scaleY(-1)"><use href="#cornOyu"/></svg>
-      <svg class="corner-oyu br" viewBox="0 0 120 120" style="transform:scale(-1)"><use href="#cornOyu"/></svg>
-
       <svg style="display:none">
         <defs>
           <g id="cornOyu">
@@ -43,16 +53,18 @@
           </g>
         </defs>
       </svg>
+      <svg class="corner-oyu tl" viewBox="0 0 120 120"><use href="#cornOyu"/></svg>
+      <svg class="corner-oyu tr" viewBox="0 0 120 120" style="transform:scaleX(-1)"><use href="#cornOyu"/></svg>
+      <svg class="corner-oyu bl" viewBox="0 0 120 120" style="transform:scaleY(-1)"><use href="#cornOyu"/></svg>
+      <svg class="corner-oyu br" viewBox="0 0 120 120" style="transform:scale(-1)"><use href="#cornOyu"/></svg>
     </div>
 
     <div class="env-title-top">
       <span class="env-bismillah">✦ Бисмилла ✦</span>
     </div>
 
-    <!-- Конверт -->
-    <div class="envelope-wrap" id="envelopeWrap">
+    <div class="envelope-wrap">
       <div class="envelope" id="envelope" onclick="openEnvelope()">
-        <!-- Конверт иллюстрациясы (SVG) -->
         <svg class="env-svg" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="envGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -64,39 +76,28 @@
               <stop offset="100%" style="stop-color:#5C0F30"/>
             </linearGradient>
           </defs>
-          <!-- Конверт негізі -->
           <rect x="0" y="20" width="280" height="180" rx="4" fill="url(#envGrad)"/>
-          <!-- Боковые треугольники -->
           <polygon points="0,20 140,110 0,200" fill="#6B1238" opacity=".8"/>
           <polygon points="280,20 140,110 280,200" fill="#6B1238" opacity=".8"/>
-          <!-- Низ -->
           <polygon points="0,200 140,120 280,200" fill="#5C0F30" opacity=".9"/>
-          <!-- Флап (крышка) -->
-          <polygon class="env-flap" points="0,20 140,100 280,20" fill="url(#flapGrad)" id="envFlap"/>
-
-          <!-- Оюлар конвертте -->
+          <polygon points="0,20 140,100 280,20" fill="url(#flapGrad)"/>
           <g opacity=".45">
             <path d="M20 160 C30 150 40 155 50 145 C45 160 50 170 40 175 C30 170 20 175 20 160Z" fill="#D4AF37"/>
             <path d="M230 160 C240 150 250 155 260 145 C255 160 260 170 250 175 C240 170 230 175 230 160Z" fill="#D4AF37"/>
             <path d="M120 155 C130 148 140 152 150 148 C145 158 148 165 140 168 C132 165 130 158 120 155Z" fill="#D4AF37"/>
           </g>
-
-          <!-- Мөр (seal) -->
           <circle cx="140" cy="105" r="18" fill="#D4AF37" opacity=".9"/>
           <circle cx="140" cy="105" r="14" fill="none" stroke="#7B1040" stroke-width="1.5"/>
           <text x="140" y="110" text-anchor="middle" fill="#7B1040" font-size="14" font-family="Georgia,serif">М</text>
         </svg>
 
-        <!-- Хат ішінде (жасырын) -->
         <div class="letter-inside" id="letterInside">
           <div class="letter-content">
             <div class="letter-header-oyu"></div>
             <p class="letter-bismillah">بِسْمِ اللَّهِ</p>
             <h2 class="letter-name">Маржан</h2>
             <p class="letter-subtitle">Қыз Ұзату</p>
-            <div class="letter-divider">
-              <span>✦ ✦ ✦</span>
-            </div>
+            <div class="letter-divider"><span>✦ ✦ ✦</span></div>
             <p class="letter-text">Сізді ұлы мерекемізге шақырамыз</p>
             <div class="letter-footer-oyu"></div>
           </div>
@@ -117,24 +118,22 @@
 
     <!-- ── HERO ── -->
     <section id="hero" class="hero-section">
-      <!-- Параллакс фон қабаттары -->
-      <div class="parallax-layer sky" data-speed="0.15"></div>
-      <div class="parallax-layer mountains-far" data-speed="0.3"></div>
+      <div class="parallax-layer sky"            data-speed="0.15"></div>
+      <div class="parallax-layer mountains-far"  data-speed="0.3"></div>
       <div class="parallax-layer mountains-near" data-speed="0.5"></div>
-      <div class="parallax-layer meadow" data-speed="0.7"></div>
+      <div class="parallax-layer meadow"         data-speed="0.7"></div>
 
-      <!-- Ою жолақтар -->
       <div class="oyu-band top"></div>
       <div class="oyu-band bottom"></div>
 
-      <!-- Ою шеңберлер (анимация) -->
+      <!-- Гүл бүршіктері -->
       <div class="blooming-ornaments">
         <svg class="bloom-svg left" viewBox="0 0 200 200">
-          <g class="bloom-group" id="bloomLeft">
-            <path class="bloom-petal" d="M100 100 C100 70 115 55 100 40 C85 55 100 70 100 100Z" fill="#D4AF37"/>
-            <path class="bloom-petal" d="M100 100 C130 100 145 85 160 100 C145 115 130 100 100 100Z" fill="#D4AF37"/>
-            <path class="bloom-petal" d="M100 100 C100 130 85 145 100 160 C115 145 100 130 100 100Z" fill="#D4AF37"/>
-            <path class="bloom-petal" d="M100 100 C70 100 55 115 40 100 C55 85 70 100 100 100Z" fill="#D4AF37"/>
+          <g id="bloomLeft">
+            <path class="bloom-petal"  d="M100 100 C100 70 115 55 100 40 C85 55 100 70 100 100Z" fill="#D4AF37"/>
+            <path class="bloom-petal"  d="M100 100 C130 100 145 85 160 100 C145 115 130 100 100 100Z" fill="#D4AF37"/>
+            <path class="bloom-petal"  d="M100 100 C100 130 85 145 100 160 C115 145 100 130 100 100Z" fill="#D4AF37"/>
+            <path class="bloom-petal"  d="M100 100 C70 100 55 115 40 100 C55 85 70 100 100 100Z" fill="#D4AF37"/>
             <path class="bloom-petal2" d="M100 100 C118 78 128 68 118 55 C105 68 100 100 100 100Z" fill="#8B1A4A"/>
             <path class="bloom-petal2" d="M100 100 C122 118 132 128 145 118 C132 105 100 100 100 100Z" fill="#8B1A4A"/>
             <path class="bloom-petal2" d="M100 100 C82 122 72 132 82 145 C95 132 100 100 100 100Z" fill="#8B1A4A"/>
@@ -143,23 +142,20 @@
             <circle cx="100" cy="100" r="6"  fill="#D4AF37"/>
           </g>
         </svg>
-        <svg class="bloom-svg right" viewBox="0 0 200 200">
-          <use href="#bloomLeft" class="bloom-group"/>
-        </svg>
+        <svg class="bloom-svg right" viewBox="0 0 200 200"><use href="#bloomLeft"/></svg>
       </div>
 
-      <!-- Ұшып жүрген гүл жапырақтары -->
+      <!-- Гүл жапырақтары -->
       <div id="petals"></div>
 
-      <!-- Қыз иллюстрациясы (1-сурет) -->
-      <div class="hero-girl-wrap parallax-layer" data-speed="0.6">
+      <!-- 1-сурет: кілемдегі қыз -->
+      <div class="hero-girl-wrap">
         <img src="images/girl1.png" alt="Қазақ қызы" class="hero-girl-img" />
       </div>
 
       <!-- Hero мазмұн -->
       <div class="hero-content">
         <p class="hero-tagline reveal-up">Сізді шақырамыз</p>
-
         <div class="hero-name-wrap">
           <svg class="name-oyu" viewBox="0 0 300 60">
             <path d="M10 30 Q75 10 150 30 Q225 50 290 30" stroke="#D4AF37" stroke-width="1.5" fill="none" opacity=".6"/>
@@ -171,24 +167,19 @@
             <path d="M10 30 Q75 50 150 30 Q225 10 290 30" stroke="#8B1A4A" stroke-width="1" fill="none" opacity=".4"/>
           </svg>
         </div>
-
         <h2 class="hero-subtitle reveal-up delay-2">Қыз Ұзату</h2>
-
         <div class="hero-date-wrap reveal-up delay-3">
           <span class="hero-date-line"></span>
           <span class="hero-date-text">2025 жылдың 20 маусымы</span>
           <span class="hero-date-line"></span>
         </div>
-
         <p class="hero-city reveal-up delay-4">Алматы қаласы</p>
       </div>
 
       <div class="scroll-indicator">
-        <div class="scroll-horse">
-          <svg viewBox="0 0 30 40" width="24">
-            <path d="M15 5 L15 30 M8 20 L15 30 L22 20" stroke="#D4AF37" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          </svg>
-        </div>
+        <svg viewBox="0 0 30 40" width="22">
+          <path d="M15 5 L15 30 M8 20 L15 30 L22 20" stroke="#D4AF37" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
         <span>Төмен</span>
       </div>
     </section>
@@ -197,8 +188,9 @@
     <!-- ── ШАҚЫРУ МӘТІНІ ── -->
     <section id="invitation" class="section-invite">
       <div class="oyu-band top-sm"></div>
-      <img src="images/girl2.png" alt="" class="invite-girl-img" aria-hidden="true" />
 
+      <!-- 2-сурет: фондық декор -->
+      <img src="images/girl2.png" alt="" class="invite-girl-img" aria-hidden="true" />
 
       <div class="container">
         <div class="invite-frame">
@@ -206,23 +198,19 @@
           <div class="invite-corner tr"></div>
           <div class="invite-corner bl"></div>
           <div class="invite-corner br"></div>
-
           <div class="invite-oyu-center"></div>
-
           <p class="invite-from reveal-up">Сізді Маржанның ата-анасы</p>
           <p class="invite-parents reveal-up delay-1">
             <strong>Ерлан Бекович</strong> және <strong>Гүлнар Айтқалиқызы</strong>
           </p>
           <p class="invite-text reveal-up delay-2">
-            Қызымыздың ұзату тойына<br>
-            шын жүректен шақырады.
+            Қызымыздың ұзату тойына<br>шын жүректен шақырады.
           </p>
           <p class="invite-quote reveal-up delay-3">
             «Қыз — отбасының гүлі,<br>ұзатқанда — жүрек тұншығады.»
           </p>
         </div>
       </div>
-
       <div class="oyu-band bottom-sm"></div>
     </section>
 
@@ -262,61 +250,31 @@
       <div class="container">
         <div class="section-eyebrow reveal-up">✦ Бағдарлама ✦</div>
         <h3 class="section-title reveal-up delay-1">Той жоспары</h3>
-
         <div class="program-list">
           <div class="program-item reveal-left">
             <div class="prog-time">14:00</div>
-            <div class="prog-dot">
-              <svg viewBox="0 0 20 20" width="20"><circle cx="10" cy="10" r="8" fill="#D4AF37"/><circle cx="10" cy="10" r="4" fill="#8B1A4A"/></svg>
-            </div>
-            <div class="prog-info">
-              <h4>Қонақтарды қарсы алу</h4>
-              <p>Дәстүрлі сәлемдесу, шай дастарханы</p>
-            </div>
+            <div class="prog-dot"><svg viewBox="0 0 20 20" width="20"><circle cx="10" cy="10" r="8" fill="#D4AF37"/><circle cx="10" cy="10" r="4" fill="#8B1A4A"/></svg></div>
+            <div class="prog-info"><h4>Қонақтарды қарсы алу</h4><p>Дәстүрлі сәлемдесу, шай дастарханы</p></div>
           </div>
-
           <div class="program-item reveal-right">
             <div class="prog-time">15:00</div>
-            <div class="prog-dot">
-              <svg viewBox="0 0 20 20" width="20"><circle cx="10" cy="10" r="8" fill="#D4AF37"/><circle cx="10" cy="10" r="4" fill="#8B1A4A"/></svg>
-            </div>
-            <div class="prog-info">
-              <h4>Беташар рәсімі</h4>
-              <p>Дәстүрлі қазақ рәсімі, батасы</p>
-            </div>
+            <div class="prog-dot"><svg viewBox="0 0 20 20" width="20"><circle cx="10" cy="10" r="8" fill="#D4AF37"/><circle cx="10" cy="10" r="4" fill="#8B1A4A"/></svg></div>
+            <div class="prog-info"><h4>Беташар рәсімі</h4><p>Дәстүрлі қазақ рәсімі, батасы</p></div>
           </div>
-
           <div class="program-item reveal-left">
             <div class="prog-time">16:00</div>
-            <div class="prog-dot">
-              <svg viewBox="0 0 20 20" width="20"><circle cx="10" cy="10" r="8" fill="#D4AF37"/><circle cx="10" cy="10" r="4" fill="#8B1A4A"/></svg>
-            </div>
-            <div class="prog-info">
-              <h4>Ас-дастархан</h4>
-              <p>Дәмді қазақы тағамдар, ән-күй</p>
-            </div>
+            <div class="prog-dot"><svg viewBox="0 0 20 20" width="20"><circle cx="10" cy="10" r="8" fill="#D4AF37"/><circle cx="10" cy="10" r="4" fill="#8B1A4A"/></svg></div>
+            <div class="prog-info"><h4>Ас-дастархан</h4><p>Дәмді қазақы тағамдар, ән-күй</p></div>
           </div>
-
           <div class="program-item reveal-right">
             <div class="prog-time">18:00</div>
-            <div class="prog-dot">
-              <svg viewBox="0 0 20 20" width="20"><circle cx="10" cy="10" r="8" fill="#D4AF37"/><circle cx="10" cy="10" r="4" fill="#8B1A4A"/></svg>
-            </div>
-            <div class="prog-info">
-              <h4>Ойын-сауық</h4>
-              <p>Халықтық би, жыр-жырау</p>
-            </div>
+            <div class="prog-dot"><svg viewBox="0 0 20 20" width="20"><circle cx="10" cy="10" r="8" fill="#D4AF37"/><circle cx="10" cy="10" r="4" fill="#8B1A4A"/></svg></div>
+            <div class="prog-info"><h4>Ойын-сауық</h4><p>Халықтық би, жыр-жырау</p></div>
           </div>
-
           <div class="program-item reveal-left">
             <div class="prog-time">20:00</div>
-            <div class="prog-dot">
-              <svg viewBox="0 0 20 20" width="20"><circle cx="10" cy="10" r="8" fill="#D4AF37"/><circle cx="10" cy="10" r="4" fill="#8B1A4A"/></svg>
-            </div>
-            <div class="prog-info">
-              <h4>Салтанатты финал</h4>
-              <p>Батаны алып, Маржанды ұзату</p>
-            </div>
+            <div class="prog-dot"><svg viewBox="0 0 20 20" width="20"><circle cx="10" cy="10" r="8" fill="#D4AF37"/><circle cx="10" cy="10" r="4" fill="#8B1A4A"/></svg></div>
+            <div class="prog-info"><h4>Салтанатты финал</h4><p>Батаны алып, Маржанды ұзату</p></div>
           </div>
         </div>
       </div>
@@ -329,26 +287,18 @@
       <div class="container">
         <div class="section-eyebrow light reveal-up">✦ Мекен-жай ✦</div>
         <h3 class="section-title light reveal-up delay-1">Той өтетін орын</h3>
-
         <div class="location-card reveal-up delay-2">
           <div class="loc-icon">
             <svg viewBox="0 0 40 50" width="40">
-              <path d="M20 2 C10 2 2 10 2 20 C2 33 20 48 20 48 C20 48 38 33 38 20 C38 10 30 2 20 2Z"
-                    fill="#D4AF37"/>
+              <path d="M20 2 C10 2 2 10 2 20 C2 33 20 48 20 48 C20 48 38 33 38 20 C38 10 30 2 20 2Z" fill="#D4AF37"/>
               <circle cx="20" cy="20" r="7" fill="#8B1A4A"/>
             </svg>
           </div>
           <h4 class="loc-name">«Астана» Мейрамханасы</h4>
           <p class="loc-addr">Алматы қаласы, Абай даңғылы, 150</p>
           <div class="loc-btns">
-            <a href="https://maps.google.com/?q=Almaty+Abay+150"
-               target="_blank" rel="noopener" class="btn btn-gold">
-              Google Maps
-            </a>
-            <a href="https://2gis.kz/almaty"
-               target="_blank" rel="noopener" class="btn btn-outline">
-              2GIS
-            </a>
+            <a href="https://maps.google.com/?q=Almaty+Abay+150" target="_blank" rel="noopener" class="btn btn-gold">Google Maps</a>
+            <a href="https://2gis.kz/almaty" target="_blank" rel="noopener" class="btn btn-outline">2GIS</a>
           </div>
         </div>
       </div>
@@ -363,20 +313,15 @@
         <p class="rsvp-note reveal-up delay-2">
           Тойға дейін <strong>10 маусымға</strong> дейін жауабыңызды беріңіз
         </p>
-
         <form id="rsvpForm" class="rsvp-form reveal-up delay-3">
           <div class="form-group">
             <label for="guestName">Аты-жөніңіз</label>
-            <input type="text" id="guestName" name="guestName"
-                   placeholder="Иванов Иван Иванович" required />
+            <input type="text" id="guestName" name="guestName" placeholder="Иванов Иван" required />
           </div>
-
           <div class="form-group">
             <label for="guestPhone">Телефон</label>
-            <input type="tel" id="guestPhone" name="guestPhone"
-                   placeholder="+7 (707) 000-00-00" />
+            <input type="tel" id="guestPhone" name="guestPhone" placeholder="+7 (707) 000-00-00" />
           </div>
-
           <div class="form-group">
             <label>Қатысасыз ба?</label>
             <div class="radio-group">
@@ -392,9 +337,8 @@
               </label>
             </div>
           </div>
-
           <div class="form-group">
-            <label for="guestCount">Бірге келетіндер саны</label>
+            <label for="guestCount">Адам саны</label>
             <select id="guestCount" name="guestCount">
               <option value="1">Тек мен</option>
               <option value="2">2 адам</option>
@@ -402,16 +346,11 @@
               <option value="4">4+ адам</option>
             </select>
           </div>
-
           <div class="form-group">
             <label for="guestWish">Тілек (міндетті емес)</label>
-            <textarea id="guestWish" name="guestWish" rows="3"
-                      placeholder="Жас жұбайларға тілегіңізді жазыңыз..."></textarea>
+            <textarea id="guestWish" name="guestWish" rows="3" placeholder="Жас жұбайларға тілегіңізді жазыңыз..."></textarea>
           </div>
-
-          <button type="submit" class="btn btn-gold btn-full" id="submitBtn">
-            Растауды жіберу
-          </button>
+          <button type="submit" class="btn btn-gold btn-full" id="submitBtn">Растауды жіберу</button>
           <p class="form-msg" id="formMsg"></p>
         </form>
       </div>
@@ -422,13 +361,11 @@
     <footer class="site-footer">
       <div class="oyu-band top-sm"></div>
       <div class="footer-content">
-        <div class="footer-oyu-center">
-          <svg viewBox="0 0 100 100" width="60">
-            <path d="M50 10 C60 30 80 30 80 50 C80 70 60 70 50 90 C40 70 20 70 20 50 C20 30 40 30 50 10Z"
-                  fill="none" stroke="#D4AF37" stroke-width="1.5" opacity=".6"/>
-            <circle cx="50" cy="50" r="8" fill="#D4AF37" opacity=".4"/>
-          </svg>
-        </div>
+        <svg viewBox="0 0 100 100" width="55" style="margin:0 auto 0.8rem;display:block">
+          <path d="M50 10 C60 30 80 30 80 50 C80 70 60 70 50 90 C40 70 20 70 20 50 C20 30 40 30 50 10Z"
+                fill="none" stroke="#D4AF37" stroke-width="1.5" opacity=".5"/>
+          <circle cx="50" cy="50" r="8" fill="#D4AF37" opacity=".35"/>
+        </svg>
         <p class="footer-name">Маржан</p>
         <p class="footer-date">20 маусым, 2025</p>
         <p class="footer-wishes">Құт болсын! ✦ Бақытты болыңыз!</p>
