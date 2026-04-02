@@ -54,6 +54,7 @@ function openEnvelope() {
     setTimeout(() => { main.style.opacity = '1'; }, 50);
 
     // Инициализация бастау
+    setTimeout(playMusic, 500);
     initMain();
   }, 2600);
 }
@@ -280,17 +281,35 @@ window.addEventListener('scroll', () => {
 
 var isPlaying = false;
 
+function playMusic() {
+  var audio = document.getElementById('bgMusic');
+  var icon  = document.getElementById('musicIcon');
+  if (!audio) return;
+  
+  audio.volume = 0.35;
+  var promise = audio.play();
+  
+  if (promise !== undefined) {
+    promise.then(function() {
+      isPlaying = true;
+      if (icon) icon.textContent = '⏸';
+    }).catch(function(e) {
+      // Браузер блоктаса — тыныш өтеді
+      console.log('Музыка қосылмады:', e);
+    });
+  }
+}
+
 function toggleMusic() {
   var audio = document.getElementById('bgMusic');
   var icon  = document.getElementById('musicIcon');
+  if (!audio) return;
+
   if (isPlaying) {
     audio.pause();
-    icon.textContent = '▶';
     isPlaying = false;
+    if (icon) icon.textContent = '▶';
   } else {
-    audio.volume = 0.35;
-    audio.play();
-    icon.textContent = '⏸';
-    isPlaying = true;
+    playMusic();
   }
 }
